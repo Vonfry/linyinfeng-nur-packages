@@ -1,5 +1,5 @@
 { writeShellScriptBin
-, nixUnstable
+, nixVersions
 , nixpkgs-fmt
 , path
 , sourcesFile ? "./pkgs/_sources/generated.nix"
@@ -31,12 +31,12 @@ writeShellScriptBin "update" ''
   # perform update
   pushd pkgs;
   export NIX_PATH="nixpkgs=${path}"
-  ${nixUnstable}/bin/nix shell ..#updater --command updater "$@";
+  ${nixVersions.unstable}/bin/nix shell ..#updater --command updater "$@";
   popd
   ${nixpkgs-fmt}/bin/nixpkgs-fmt ${sourcesFile}
   # update done
 
-  ${nixUnstable}/bin/nix eval --expr '
+  ${nixVersions.unstable}/bin/nix eval --expr '
     (builtins.getFlake "'$PWD'").lib.versionDiff {
       oldSources = ${oldSourcesFile};
       newSources = ${sourcesFile};
