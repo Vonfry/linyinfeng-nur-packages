@@ -1,0 +1,35 @@
+From 43da8cb86d11645a2d92525157614b157e315d2d Mon Sep 17 00:00:00 2001
+From: Lin Yinfeng <lin.yinfeng@outlook.com>
+Date: Thu, 14 Apr 2022 11:47:59 +0800
+Subject: [PATCH] autoPatchelfHook: fix precise dependency ignorance
+
+---
+ pkgs/build-support/setup-hooks/auto-patchelf.sh | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/pkgs/build-support/setup-hooks/auto-patchelf.sh b/pkgs/build-support/setup-hooks/auto-patchelf.sh
+index 661b8597efea0..b56f9ce2dbf4c 100644
+--- a/pkgs/build-support/setup-hooks/auto-patchelf.sh
++++ b/pkgs/build-support/setup-hooks/auto-patchelf.sh
+@@ -53,17 +53,18 @@ autoPatchelf() {
+         esac
+     done
+ 
+-    if [ "${autoPatchelfIgnoreMissingDeps[*]}" == "1" ]; then
++    local ignoreMissingDepsArray=($autoPatchelfIgnoreMissingDeps)
++    if [ "$autoPatchelfIgnoreMissingDeps" == "1" ]; then
+         echo "autoPatchelf: WARNING: setting 'autoPatchelfIgnoreMissingDeps" \
+              "= true;' is deprecated and will be removed in a future release." \
+              "Use 'autoPatchelfIgnoreMissingDeps = [ \"*\" ];' instead." >&2
+-        autoPatchelfIgnoreMissingDeps=( "*" )
++        ignoreMissingDepsArray=( "*" )
+     fi
+ 
+     local runtimeDependenciesArray=($runtimeDependencies)
+     @pythonInterpreter@ @autoPatchelfScript@                            \
+         ${norecurse:+--no-recurse}                                      \
+-        --ignore-missing "${autoPatchelfIgnoreMissingDeps[@]}"          \
++        --ignore-missing "${ignoreMissingDepsArray[@]}"                 \
+         --paths "$@"                                                    \
+         --libs "${autoPatchelfLibs[@]}"                                 \
+                "${extraAutoPatchelfLibs[@]}"                            \

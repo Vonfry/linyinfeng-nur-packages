@@ -73,7 +73,7 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     # TODO remove after #168584
-    declare -a autoPatchelfIgnoreMissingDeps=( $autoPatchelfIgnoreMissingDeps )
+    # declare -a autoPatchelfIgnoreMissingDeps=( $autoPatchelfIgnoreMissingDeps )
 
     mkdir -p "$out"
     cp -r opt "$out/opt"

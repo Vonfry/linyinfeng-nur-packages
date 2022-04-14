@@ -15,9 +15,14 @@
         inherit self inputs;
 
         sharedOverlays = builtins.attrValues (self.overlays);
-        channels.nixpkgs.config = {
-          allowUnfree = true;
-          allowAliases = false;
+        channels.nixpkgs = {
+          patches = [
+            ./patches/168584.patch
+          ];
+          config = {
+            allowUnfree = true;
+            allowAliases = false;
+          };
         };
 
         outputsBuilder = channels:
